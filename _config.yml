@@ -1,0 +1,5 @@
+title: "weather wow"
+description: "Telegram location tracking app"
+theme: jekyll-theme-minimal
+include: [".html"]
+exclude: [".nojekyll"]
