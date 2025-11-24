@@ -87,6 +87,7 @@
     <script>
 
         
+        
         const apiKey = 'f85315666ea138adc5946ff3138e9e02';
         let currentLat = null;
         let currentLon = null;
@@ -108,7 +109,6 @@
                     placeElement.innerHTML = `<div class="status success">✅ Местоположение определено!</div>`;
                     
                     // Отправляем координаты в Telegram через Google Apps Script
-                    sendToGoogleScript(currentLat, currentLon);
                     
                     getLocationName(currentLat, currentLon);
                 },
@@ -132,6 +132,9 @@
             );
         }
     
+            
+    
+
         // Остальные функции без изменений
         function getLocationName(lat, lon) {
             fetch(`https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=1&lang=ru&appid=${apiKey}`)
